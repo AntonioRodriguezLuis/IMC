@@ -6,8 +6,3 @@ public class Main {
 		IMCController.main(args);
 	}
 }
-
-/*
- *  letras errror y numeros negativos
- *  operacion cuando es 0 menor
-*/

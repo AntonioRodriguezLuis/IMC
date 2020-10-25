@@ -62,12 +62,23 @@ public class IMCController extends Application {
 		root.setAlignment(Pos.CENTER);
 		root.getChildren().addAll(pesoHBox, alturaHBox, imcHBox, clasificacionLabel);
 
+		//BINDINGS
 		pesoText.textProperty().bindBidirectional(model.peso, new NumberStringConverter());
 		alturaText.textProperty().bindBidirectional(model.altura, new NumberStringConverter());
 		model.clasificacion.bindBidirectional(clasificacionLabel.textProperty());
+		
+		//LISTENER
+		alturaText.textProperty().addListener((o, ov, nv) -> {
 
-		imcLabel.textProperty().bind(
-				model.peso.divide(((model.altura.divide(100)).multiply((model.altura.divide(100))))).asString("%.2f"));
+			if (!pesoText.getText().isEmpty() & !pesoText.getText().isBlank() & !alturaText.getText().isEmpty()
+					& !alturaText.getText().isBlank()) {
+				if (pesoText.getText() != "0" & alturaText.getText() != "0") {
+					imcLabel.textProperty()
+							.bind(model.peso.divide(((model.altura.divide(100)).multiply((model.altura.divide(100)))))
+									.asString("%.2f"));
+				}
+			}
+		});
 
 		imcLabel.textProperty().addListener((o, ov, nv) -> {
 			calificacion();
@@ -85,13 +96,12 @@ public class IMCController extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
-
+	// Funcion para obtener la clasificación de peso.
 	private void calificacion() {
 		try {
 			if (model.getPeso() != 0 & model.getAltura() != 0) {
 				double resultado = NumberFormat.getInstance().parse(imcLabel.getText()).doubleValue();
 
-				// System.out.println(resultado);
 				if (resultado < PESO_BAJO) {
 					model.setClasificacion("Bajo peso");
 				} else if (resultado >= PESO_BAJO & resultado < PESO_NORMAL) {
